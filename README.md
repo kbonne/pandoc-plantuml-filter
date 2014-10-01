@@ -1,5 +1,8 @@
 # Pandoc PlantUML Filter
 
+[![Travis build status](https://travis-ci.org/kbonne/pandoc-plantuml-filter.png?branch=master)](https://travis-ci.org/kbonne/pandoc-plantuml-filter)
+
+
 Replaces `CodeBlocks` with `plantuml` class with PlantUML generated UML diagram
 
 **This is a work in progress.**
