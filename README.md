@@ -52,4 +52,3 @@ Car *- Wheel : have 4 >
 Car -- Person : < owns
 
 @enduml
-```
