@@ -1,6 +1,6 @@
 language: haskell
 ghc:
-    - 7.8
+    - 7.6
 notifications:
     email:
         - kurt.bonne@gmail.com
