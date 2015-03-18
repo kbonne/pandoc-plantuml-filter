@@ -4,24 +4,25 @@ import Data.ByteString.Lazy.UTF8 (fromString)
 import Data.Digest.Pure.SHA (sha1, showDigest)
 import System.IO (hClose, hPutStr, IOMode(..), openBinaryFile)
 import System.Process
+import System.Environment
 
-processBlocks :: Block -> IO Block
-processBlocks b =
+processBlocks :: String ->  Block -> IO Block
+processBlocks f b =
   case b of
-    CodeBlock (_ , ["plantuml"], _) content -> plantUMLToImg content
+    CodeBlock (_ , ["plantuml"], _) content -> plantUMLToImg f content
     _ -> return b
 
-plantUMLToImg :: String -> IO Block
-plantUMLToImg content =  do
-  path <- renderImage content
+plantUMLToImg :: String -> String -> IO Block
+plantUMLToImg f content =  do
+  path <- renderImage f content
   return $ Para [Image [] (path, "")]
 
-renderImage :: String -> IO String
-renderImage content = do
-  let path = uniqueName content ++ ".eps"
+renderImage :: String -> String -> IO String
+renderImage f content = do
+  let path = uniqueName content ++ "." ++ f
   (Just hIn, Just hOut, _, _) <-
-    createProcess (proc "plantuml" ["-pipe", "-teps"]){ std_in = CreatePipe,
-                                                        std_out = CreatePipe }
+    createProcess (proc "plantuml" ["-pipe", "-t" ++ f]){ std_in = CreatePipe,
+                                                          std_out = CreatePipe }
   hPutStr hIn content
   hClose hIn
 
@@ -37,5 +38,22 @@ renderImage content = do
 uniqueName :: String -> String
 uniqueName = showDigest . sha1 . fromString
 
+getOutputFormat :: [String] ->  String
+getOutputFormat args =
+  if length args /= 1
+  then error "Invalid arguments specified"
+  else imageFormatFromOutputFormat (head args)
+
+imageFormatFromOutputFormat :: String ->  String
+imageFormatFromOutputFormat f =
+  case f of
+	  "latex" -> "eps"
+	  "html" -> "svg"
+	  "markdown" -> "utxt"
+	  _ -> error "Unsupported document format"
+
 main :: IO ()
-main = toJSONFilter processBlocks
+main = do
+  args <-  getArgs
+  let outputFormat = getOutputFormat args
+  toJSONFilter $ processBlocks outputFormat 
