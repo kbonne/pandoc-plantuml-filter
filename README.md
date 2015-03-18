@@ -2,28 +2,64 @@
 
 [![Travis build status](https://travis-ci.org/kbonne/pandoc-plantuml-filter.png?branch=master)](https://travis-ci.org/kbonne/pandoc-plantuml-filter)
 
+Filter for [pandoc] that replaces `CodeBlocks` with a `plantuml` class with [PlantUML] generated UML diagrams.
 
-Replaces `CodeBlocks` with `plantuml` class with PlantUML generated UML diagram
+This allows you to use code blocks in your documents containing [PlantUML] DSL
+which will be replaced by actual UML diagrams after coversion using [pandoc] and
+this filter.
 
 **This is a work in progress.**
 
+## Example
+
+[This](README.pdf) is an example `.pdf` generated of this document using the
+command found below in _Usage_.
+
 ## Requirements
 
-- `plantuml` in `PATH` which launches PlantUML jar (see `scripts` folder)
+- `plantuml` in `PATH` which launches [PlantUML] jar (see `scripts` folder)
 - `pandoc`
+
+## Install
+
+### From package repository (Ubuntu PPA)
+
+```
+add-apt-repository ppa:kbonne/pandoc-plantuml-filter
+apt-get update
+apt-get install pandoc-plantuml-filter
+```
+
+### From Source
+
+```
+git clone git@github.com:kbonne/pandoc-plantuml-filter.git
+cd pandoc-plantuml-filter/
+cabal install
+```
 
 ## Usage
 
 e.g. Generating .pdf from this file
 ```
-pandoc README.md --variable=geometry:a4paper,margin=2cm --variable=fontsize:11pt -o README.pdf --filter ./dist/build/pandoc-plantuml-filter/pandoc-plantuml-filter
+pandoc README.md --variable=geometry:a4paper,margin=2cm \
+--variable=fontsize:11pt -o README.pdf --filter pandoc-plantuml-filter
 ```
+
+## Limitations
+
+- No tests
+- Calls hard-coded `plantuml` which should be in `PATH`
+- PlantUML diagrams are hard-coded generated in `.eps` format (for `.pdf`)
+   (Implies it's currently not usable for e.g. generating `.html` documents)
+- Temporary files are generated in `CWD` and not removed.
+- **No tests**
 
 ## Tests
 
 ### Javascript
 
-Should be skipped
+Should left as-is
 
 ```javascript
 var s = "JavaScript syntax highlighting";
@@ -56,3 +92,6 @@ Car -- Person : < owns
 
 @enduml
 ```
+
+[PlantUML]: http://plantuml.sourceforge.net/
+[pandoc]: http://johnmacfarlane.net/pandoc/
