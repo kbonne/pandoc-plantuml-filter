@@ -1,0 +1,35 @@
+Source: pandoc-plantuml-filter
+Maintainer: Kurt Bonne <kurt.bonne@gmail.com>
+Priority: extra
+Section: haskell
+Build-Depends: debhelper (>= 7.0),
+ haskell-devscripts (>= 0.8),
+ cdbs,
+ ghc,
+ libghc-sha-dev,
+ libghc-sha-prof,
+ ghc-prof,
+ libghc-pandoc-types-dev,
+ libghc-pandoc-types-prof,
+ libghc-utf8-string-dev,
+ libghc-utf8-string-prof,
+X-Description: Pandoc filter for PlantUML code blocks
+ Renders images using PlantUML from PlantUML code blocks
+
+Package: pandoc-plantuml-filter
+Architecture: any
+Section: misc
+Depends: ${haskell:Depends},
+ ${misc:Depends},
+ ${shlibs:Depends},
+ pandoc,
+ graphviz,
+Recommends: ${haskell:Recommends},
+ textlive-full,
+Suggests: ${haskell:Suggests},
+Conflicts: ${haskell:Conflicts},
+Provides: ${haskell:Provides},
+Description: ${haskell:ShortDescription}${haskell:ShortBlurb}
+ ${haskell:LongDescription}
+ .
+ ${haskell:Blurb}
