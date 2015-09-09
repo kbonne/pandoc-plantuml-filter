@@ -38,7 +38,8 @@ import Data.ByteString.Lazy (hGetContents, hPut)
 import Data.ByteString.Lazy.UTF8 (fromString)
 import Data.Char (toLower)
 import Data.Digest.Pure.SHA (sha1, showDigest)
-import System.IO (hClose, hPutStr, IOMode(..), openBinaryFile)
+import System.Info(os)
+import System.IO (hClose, hPutStr, IOMode(..), openBinaryFile, openFile)
 import System.Process
 
 -- | Selected output format
@@ -87,25 +88,49 @@ processBlocks b =
 -- | Render the a PlantUML image in the requested format to a given filename.
 renderImage :: ImgType -> String -> IO String
 renderImage typ content = do
-  let ft   = case typ of
+  let ft = case typ of
                PNG -> "png"
                EPS -> "eps"
                SVG -> "svg"
-      path = uniqueName content ++ "." ++ ft
-  (Just hIn, Just hOut, _, _) <-
-    createProcess (proc "plantuml" ["-pipe", "-t" ++ ft]){ std_in = CreatePipe,
-                                                           std_out = CreatePipe }
+      path  = uniqueName content ++ "." ++ ft
+      exec  = if os == "mingw32"
+              then renderImageWindows
+              else renderImageUnix
+  exec ft content
+
+-- | Render an image on Unix targets - in this case we can rely on pipe semantics
+-- | when we write to the PlantUML script.
+renderImageUnix :: String -> String -> IO String
+renderImageUnix ft content = do
+  let path = uniqueName content ++ "." ++ ft
+  (Just hIn, Just hOut, _, _) <- createProcess (proc "plantuml" ["-pipe", "-t" ++ ft]) { std_in = CreatePipe, std_out = CreatePipe }
   hPutStr hIn content
   hClose hIn
-
-  hFile <- openBinaryFile path WriteMode
-  img <- hGetContents hOut
-  hPut hFile img
-
-  hClose hFile
-  hClose hOut
-
+  writeImageFile hOut path
   return path
+ 
+-- | Render an image on Windows targets. It is almost impossible to reliably pipe
+-- | arbitrary content to a Windows batch file, so we generate an intermediate
+-- | file containing the UML. 
+-- | TODO: Path to PlantUML.jar is hardcoded. FInd a way to fix this.
+renderImageWindows :: String -> String -> IO String
+renderImageWindows ft content = do
+  let name  = uniqueName content
+      opath = name ++ "." ++ ft
+      ipath = name ++ ".uml"
+  hUml <- openFile ipath WriteMode
+  hPutStr hUml content
+  hClose hUml
+  (_, Just hOut, _, _) <- createProcess (proc "java.exe" ["-jar", "c:\\bin\\plantuml.jar", ipath, "-t" ++ ft]) { std_out = CreatePipe }
+  writeImageFile hOut opath
+  return opath 
+
+-- | Read the contents of hPipe and write them as a binary file to path
+writeImageFile hPipe path = do
+  hPng <- openBinaryFile path WriteMode
+  img <- hGetContents hPipe
+  hPut hPng img
+  hClose hPng
 
 -- | Generate a unique name for the generated image. Here we use the SHA1 hash
 -- | of the content as a sufficiently unique name.

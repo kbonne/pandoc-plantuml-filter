@@ -10,7 +10,7 @@ name:                pandoc-plantuml-filter
 -- PVP summary:      +-+------- breaking API changes
 --                   | | +----- non-breaking API additions
 --                   | | | +--- code changes with no API change
-version:             0.1.0.2
+version:             0.1.1.1
 
 -- A short (one-line) description of the package.
 synopsis:            Pandoc filter for PlantUML code blocks
@@ -25,7 +25,7 @@ license:             GPL
 license-file:        LICENSE
 
 -- The package author(s).
-author:              Kurt Bonne
+author:              Kurt Bonne, Jeremy O'Donoghue
 
 -- An email address to which users can send suggestions, bug reports, and
 -- patches.
