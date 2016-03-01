@@ -10,7 +10,7 @@ name:                pandoc-plantuml-filter
 -- PVP summary:      +-+------- breaking API changes
 --                   | | +----- non-breaking API additions
 --                   | | | +--- code changes with no API change
-version:             0.1.1.1
+version:             0.2.0.0
 
 -- A short (one-line) description of the package.
 synopsis:            Pandoc filter for PlantUML code blocks
@@ -29,10 +29,10 @@ author:              Kurt Bonne, Jeremy O'Donoghue
 
 -- An email address to which users can send suggestions, bug reports, and
 -- patches.
-maintainer:          kurt.bonne@gmail.com
+maintainer:          jeremy.odonoghue@gmail.com
 
 -- A copyright notice.
-copyright:           Kurt Bonne <kurt.bonne@gmail.com>
+copyright:           Kurt Bonne <kurt.bonne@gmail.com>, Jeremy O'Donoghue <jeremy.odonoghue@gmail.com>
 
 category:            Text
 
@@ -61,7 +61,7 @@ executable pandoc-plantuml-filter
 
   -- Other library packages from which modules are imported.
   build-depends:       base >=4.6 && <4.10
-                     , pandoc-types
+                     , pandoc-types >= 1.16
                      , utf8-string
                      , SHA
                      , process

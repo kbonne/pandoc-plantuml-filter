@@ -30,10 +30,18 @@ apt-get update
 apt-get install pandoc-plantuml-filter
 ```
 
-### From Source
+### From Source (with Stack)
 
 ```
-git clone git@github.com:kbonne/pandoc-plantuml-filter.git
+git clone https://github.com/jodonoghue/pandoc-plantuml-filter.git
+cd pandoc-plantuml-filter/
+stack install
+```
+
+### From Source (with Cabal)
+
+```
+git clone https://github.com/jodonoghue/pandoc-plantuml-filter.git
 cd pandoc-plantuml-filter/
 cabal install
 ```
@@ -49,9 +57,8 @@ pandoc README.md --variable=geometry:a4paper,margin=2cm \
 ## Limitations
 
 - No tests
-- Calls hard-coded `plantuml` which should be in `PATH`
-- PlantUML diagrams are hard-coded generated in `.eps` format (for `.pdf`)
-   (Implies it's currently not usable for e.g. generating `.html` documents)
+- Calls hard-coded `plantuml` which should be in `PATH` (on Windows,
+  `plantuml.jar` needs to be in `C:\Bin`.
 - Temporary files are generated in `CWD` and not removed.
 - **No tests**
 
