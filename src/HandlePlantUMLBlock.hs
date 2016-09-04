@@ -14,7 +14,7 @@ processBlocks b =
 plantUMLToImg :: String -> IO Block
 plantUMLToImg content =  do
   path <- renderImage content
-  return $ Para [Image [] (path, "")]
+  return $ Para [Image ([], [], []) [] (path, "")]
 
 renderImage :: String -> IO String
 renderImage content = do
