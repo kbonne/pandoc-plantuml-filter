@@ -60,8 +60,8 @@ executable pandoc-plantuml-filter
   -- other-extensions:
 
   -- Other library packages from which modules are imported.
-  build-depends:       base >=4.6 && <4.8
-                     , pandoc-types
+  build-depends:       base >=4.6 && <5
+                     , pandoc-types >= 1.16.1
                      , utf8-string
                      , SHA
                      , process

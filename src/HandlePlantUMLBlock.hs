@@ -14,13 +14,13 @@ processBlocks b =
 plantUMLToImg :: String -> IO Block
 plantUMLToImg content =  do
   path <- renderImage content
-  return $ Para [Image [] (path, "")]
+  return $ Para [Image ([], [], []) [] (path, "")]
 
 renderImage :: String -> IO String
 renderImage content = do
-  let path = uniqueName content ++ ".eps"
+  let path = uniqueName content ++ ".png"
   (Just hIn, Just hOut, _, _) <-
-    createProcess (proc "plantuml" ["-pipe", "-teps"]){ std_in = CreatePipe,
+    createProcess (proc "plantuml" ["-pipe", "-tpng"]){ std_in = CreatePipe,
                                                         std_out = CreatePipe }
   hPutStr hIn content
   hClose hIn
