@@ -65,6 +65,7 @@ executable pandoc-plantuml-filter
                      , utf8-string
                      , text
                      , SHA
+                     , directory
                      , process
                      , bytestring
 

@@ -42,7 +42,8 @@ import Data.Digest.Pure.SHA (sha1, showDigest)
 import Data.List (partition)
 import Data.Text (Text, pack, unpack)
 import qualified Data.Text as T (concat, empty)
-import System.Info(os)
+import System.Directory (getTemporaryDirectory, findExecutable)
+import System.Info (os)
 import System.IO (hClose, hPutStr, IOMode(..), openBinaryFile, openFile)
 import System.Process
 
@@ -130,16 +131,16 @@ renderImageUnix ft content = do
 -- | Render an image on Windows targets. It is almost impossible to reliably pipe
 -- | arbitrary content to a Windows batch file, so we generate an intermediate
 -- | file containing the UML. 
--- | TODO: Path to PlantUML.jar is hardcoded. FInd a way to fix this.
+-- | PlantUML.jar needs to be in %PATH%.
 renderImageWindows :: String -> String -> IO String
 renderImageWindows ft content = do
-  let name  = uniqueName content
+  tmp <- getTemporaryDirectory
+  let name  = tmp ++ (uniqueName content)
       opath = name ++ "." ++ ft
       ipath = name ++ ".uml"
-  hUml <- openFile ipath WriteMode
-  hPutStr hUml content
-  hClose hUml
-  (_, Just hOut, _, _) <- createProcess (proc "java.exe" ["-jar", "c:\\bin\\plantuml.jar", ipath, "-t" ++ ft]) { std_out = CreatePipe }
+  writeFile ipath content
+  Just jar <- findExecutable "plantuml.jar"
+  (_, Just hOut, _, _) <- createProcess (proc "java.exe" ["-jar", jar, ipath, "-t" ++ ft]) { std_out = CreatePipe }
   writeImageFile hOut opath
   return opath 
 
